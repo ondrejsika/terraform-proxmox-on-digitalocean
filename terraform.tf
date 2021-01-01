@@ -40,10 +40,10 @@ resource "digitalocean_vpc" "vpc" {
 resource "digitalocean_droplet" "pve" {
   count = var.vm_count
 
-  image  = "debian-10-x64"
-  name   = "pve${count.index}"
-  region = "nyc3"
-  size   = "s-6vcpu-16gb"
+  image    = "debian-10-x64"
+  name     = "pve${count.index}"
+  region   = "nyc3"
+  size     = "s-6vcpu-16gb"
   vpc_uuid = digitalocean_vpc.vpc.id
   ssh_keys = [
     data.digitalocean_ssh_key.ondrejsika.id
@@ -69,7 +69,7 @@ resource "digitalocean_droplet" "pve" {
 }
 
 resource "digitalocean_volume" "ceph" {
-  count  = var.vm_count
+  count = var.vm_count
 
   name   = "pve-ceph-${count.index}"
   region = "nyc3"
@@ -77,7 +77,7 @@ resource "digitalocean_volume" "ceph" {
 }
 
 resource "digitalocean_volume_attachment" "ceph" {
-  count  = var.vm_count
+  count = var.vm_count
 
   droplet_id = digitalocean_droplet.pve[count.index].id
   volume_id  = digitalocean_volume.ceph[count.index].id
@@ -87,9 +87,9 @@ resource "cloudflare_record" "pve" {
   count = var.vm_count
 
   zone_id = var.cloudflare_zone_id
-  name   = "pve${count.index}-do"
-  value  = digitalocean_droplet.pve[count.index].ipv4_address
-  type   = "A"
+  name    = "pve${count.index}-do"
+  value   = digitalocean_droplet.pve[count.index].ipv4_address
+  type    = "A"
   proxied = false
 }
 
@@ -97,9 +97,9 @@ resource "cloudflare_record" "droplet_wildcard" {
   count = var.vm_count
 
   zone_id = var.cloudflare_zone_id
-  name   = "*.pve${count.index}-do"
-  value  = "pve${count.index}-do.sikademo.com"
-  type   = "CNAME"
+  name    = "*.pve${count.index}-do"
+  value   = "pve${count.index}-do.sikademo.com"
+  type    = "CNAME"
   proxied = false
 }
 
