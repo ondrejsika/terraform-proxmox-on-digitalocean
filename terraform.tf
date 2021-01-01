@@ -1,6 +1,19 @@
+terraform {
+  backend "remote" {
+    organization = "sikademo"
+
+    workspaces {
+      name = "do-pve"
+    }
+  }
+}
+
+
 variable "do_token" {}
-variable "cloudflare_email" {}
-variable "cloudflare_token" {}
+variable "cloudflare_api_token" {}
+variable "cloudflare_zone_id" {
+  default = "f2c00168a7ecd694bb1ba017b332c019"
+}
 
 variable "vm_count" {
   default = 3
@@ -11,9 +24,7 @@ provider "digitalocean" {
 }
 
 provider "cloudflare" {
-  version = "~> 1.0"
-  email = var.cloudflare_email
-  token = var.cloudflare_token
+  api_token = var.cloudflare_api_token
 }
 
 data "digitalocean_ssh_key" "ondrejsika" {
@@ -75,7 +86,7 @@ resource "digitalocean_volume_attachment" "ceph" {
 resource "cloudflare_record" "pve" {
   count = var.vm_count
 
-  domain = "sikademo.com"
+  zone_id = var.cloudflare_zone_id
   name   = "pve${count.index}-do"
   value  = digitalocean_droplet.pve[count.index].ipv4_address
   type   = "A"
@@ -85,7 +96,7 @@ resource "cloudflare_record" "pve" {
 resource "cloudflare_record" "droplet_wildcard" {
   count = var.vm_count
 
-  domain = "sikademo.com"
+  zone_id = var.cloudflare_zone_id
   name   = "*.pve${count.index}-do"
   value  = "pve${count.index}-do.sikademo.com"
   type   = "CNAME"
