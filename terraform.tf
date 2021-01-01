@@ -103,10 +103,18 @@ resource "cloudflare_record" "droplet_wildcard" {
   proxied = false
 }
 
-output "foo" {
+output "ips" {
   value = [
     digitalocean_droplet.pve[0].ipv4_address,
     digitalocean_droplet.pve[1].ipv4_address,
     digitalocean_droplet.pve[2].ipv4_address,
+  ]
+}
+
+output "domains" {
+  value = [
+    cloudflare_record.pve[0].hostname,
+    cloudflare_record.pve[1].hostname,
+    cloudflare_record.pve[2].hostname,
   ]
 }
