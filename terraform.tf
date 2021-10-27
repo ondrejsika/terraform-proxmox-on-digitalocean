@@ -37,7 +37,7 @@ module "pve" {
   source             = "./do-pve"
   prefix             = count.index
   cloudflare_zone_id = var.cloudflare_zone_id
-  vpc_ip_range       = "10.99.${count.index}.0/24"
+  vpc_ip_range       = "10.250.${count.index}.0/24"
   ssh_key_id         = data.digitalocean_ssh_key.ondrejsika.id
 }
 
