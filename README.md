@@ -14,10 +14,16 @@ terraform apply -auto-approve
 ## Connect
 
 ```
-ssh root@pve1-do.sikademo.com
-ssh root@pve2-do.sikademo.com
-ssh root@pve3-do.sikademo.com
+ssh root@pve0node0.sikademo.com
+ssh root@pve0node1.sikademo.com
+ssh root@pve0node2.sikademo.com
 ```
+
+or
+
+- https://pve0node0.sikademo.com:8006
+- https://pve0node1.sikademo.com:8006
+- https://pve0node2.sikademo.com:8006
 
 ## Destroy Infrastructure
 
