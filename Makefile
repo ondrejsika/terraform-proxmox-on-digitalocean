@@ -1,3 +1,5 @@
+default: fmt
+
 apply:
 	terraform apply
 
