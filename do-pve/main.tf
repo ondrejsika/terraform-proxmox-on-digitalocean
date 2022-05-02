@@ -55,6 +55,7 @@ resource "digitalocean_droplet" "pve" {
       "apt update && DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' full-upgrade",
       "DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' install proxmox-ve postfix open-iscsi",
       "apt remove -y os-prober",
+      "curl -fsSL https://ins.oxs.cz/slu-linux-amd64.sh | sh",
     ]
   }
 }
