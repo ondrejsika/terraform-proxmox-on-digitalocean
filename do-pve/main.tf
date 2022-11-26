@@ -23,7 +23,7 @@ resource "digitalocean_vpc" "vpc" {
 resource "digitalocean_droplet" "pve" {
   count = var.node_count
 
-  image    = "debian-10-x64"
+  image    = "debian-11-x64"
   name     = "pve${var.prefix}node${count.index}"
   region   = var.region
   size     = var.size
@@ -34,30 +34,22 @@ resource "digitalocean_droplet" "pve" {
   user_data = <<-EOF
   #cloud-config
   ssh_pwauth: yes
-  password: asdfasdf2021
+  password: asdfasdf2022
   chpasswd:
     expire: false
+  runcmd:
+  - |
+    curl -fsSL https://raw.githubusercontent.com/sikalabs/slu/master/install.sh | sudo sh
+    echo $(slu ip) pve${var.prefix}node${count.index} pve${var.prefix}node${count.index}.sikademo.com > /etc/hosts
+    echo $(slu ip) pve${var.prefix}node${count.index} pve${var.prefix}node${count.index}.sikademo.com > /etc/cloud/templates/hosts.debian.tmpl
+    echo "deb [arch=amd64] http://download.proxmox.com/debian/pve bullseye pve-no-subscription" > /etc/apt/sources.list.d/pve-install-repo.list
+    wget https://enterprise.proxmox.com/debian/proxmox-release-bullseye.gpg -O /etc/apt/trusted.gpg.d/proxmox-release-bullseye.gpg
+    apt update
+    DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' full-upgrade
+    DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' install proxmox-ve postfix open-iscsi
+    apt remove -y os-prober
   EOF
 
-  connection {
-    type = "ssh"
-    user = "root"
-    host = self.ipv4_address
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "echo ${self.ipv4_address} ${self.name} ${self.name}-do.sikademo.com > /etc/hosts",
-      "echo ${self.ipv4_address} ${self.name} ${self.name}-do.sikademo.com > /etc/cloud/templates/hosts.debian.tmpl",
-      "echo 'deb http://download.proxmox.com/debian/pve buster pve-no-subscription' > /etc/apt/sources.list.d/pve-install-repo.list",
-      "wget http://download.proxmox.com/debian/proxmox-ve-release-6.x.gpg -O /etc/apt/trusted.gpg.d/proxmox-ve-release-6.x.gpg",
-      "chmod +r /etc/apt/trusted.gpg.d/proxmox-ve-release-6.x.gpg",
-      "apt update && DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' full-upgrade",
-      "DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' install proxmox-ve postfix open-iscsi",
-      "apt remove -y os-prober",
-      "curl -fsSL https://ins.oxs.cz/slu-linux-amd64.sh | sh",
-    ]
-  }
 }
 
 resource "digitalocean_volume" "ceph" {
@@ -111,17 +103,11 @@ resource "cloudflare_record" "droplet_wildcard" {
 }
 
 output "ips" {
-  value = [
-    digitalocean_droplet.pve[0].ipv4_address,
-    digitalocean_droplet.pve[1].ipv4_address,
-    digitalocean_droplet.pve[2].ipv4_address,
-  ]
+  value = digitalocean_droplet.pve.*.ipv4_address
+
 }
 
 output "domains" {
-  value = [
-    cloudflare_record.pve[0].hostname,
-    cloudflare_record.pve[1].hostname,
-    cloudflare_record.pve[2].hostname,
-  ]
+  value = cloudflare_record.pve.*.hostname
+
 }
