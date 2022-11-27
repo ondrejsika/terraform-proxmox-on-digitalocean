@@ -15,8 +15,10 @@ variable "cloudflare_zone_id" {
   default = "f2c00168a7ecd694bb1ba017b332c019"
 }
 
-variable "pve_count" {
-  default = 1
+locals {
+  clusters = [
+    "0",
+  ]
 }
 
 provider "digitalocean" {
@@ -32,12 +34,12 @@ data "digitalocean_ssh_key" "ondrejsika" {
 }
 
 module "pve" {
-  count = var.pve_count
+  for_each = toset(local.clusters)
 
   source             = "./do-pve"
-  prefix             = count.index
+  prefix             = each.key
   cloudflare_zone_id = var.cloudflare_zone_id
-  vpc_ip_range       = "10.250.${count.index}.0/24"
+  vpc_ip_range       = "10.250.${each.key}.0/24"
   ssh_key_id         = data.digitalocean_ssh_key.ondrejsika.id
   size               = "16gb"
 }
