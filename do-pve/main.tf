@@ -111,3 +111,15 @@ output "domains" {
   value = cloudflare_record.pve.*.hostname
 
 }
+
+output "price_per_hour" {
+  value = sum(digitalocean_droplet.pve.*.price_hourly)
+}
+
+output "price_per_day" {
+  value = sum(digitalocean_droplet.pve.*.price_hourly) * 24
+}
+
+output "price_per_month" {
+  value = sum(digitalocean_droplet.pve.*.price_monthly)
+}
