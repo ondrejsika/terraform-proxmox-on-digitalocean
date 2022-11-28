@@ -6,3 +6,4 @@ terraform.tfvars
 *.tfstate*backup
 *.log
 .terraform.tfstate.lock.info
+override.tf
