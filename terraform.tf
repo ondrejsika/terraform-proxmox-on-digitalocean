@@ -47,3 +47,15 @@ module "pve" {
 output "pve" {
   value = module.pve
 }
+
+output "price_per_hour" {
+  value = format("%.2f", sum([for el in module.pve : el.price_per_hour]))
+}
+
+output "price_per_day" {
+  value = format("%.2f", sum([for el in module.pve : el.price_per_day]))
+}
+
+output "price_per_month" {
+  value = format("%.2f", sum([for el in module.pve : el.price_per_month]))
+}
