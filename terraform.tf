@@ -17,7 +17,7 @@ variable "cloudflare_zone_id" {
 
 locals {
   clusters = [
-    "0",
+    # "0",
   ]
 }
 
