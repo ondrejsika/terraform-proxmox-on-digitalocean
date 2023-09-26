@@ -16,6 +16,7 @@ variable "cloudflare_zone_id" {
 }
 
 locals {
+  # See override.tf for live config
   clusters = [
     # "0",
   ]
