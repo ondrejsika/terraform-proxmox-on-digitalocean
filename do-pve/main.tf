@@ -11,7 +11,7 @@ variable "region" {
   default = "nyc3"
 }
 variable "size" {
-  default = "s-6vcpu-16gb"
+  default = "s-4vcpu-8gb"
 }
 
 resource "digitalocean_vpc" "vpc" {
