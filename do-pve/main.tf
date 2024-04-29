@@ -34,7 +34,7 @@ resource "digitalocean_droplet" "pve" {
   user_data = <<-EOF
   #cloud-config
   ssh_pwauth: yes
-  password: asdfasdf2022
+  password: asdfasdf2020
   chpasswd:
     expire: false
   runcmd:
