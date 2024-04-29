@@ -42,14 +42,18 @@ resource "digitalocean_droplet" "pve" {
     curl -fsSL https://raw.githubusercontent.com/sikalabs/slu/master/install.sh | sudo sh
     echo $(slu ip) pve${var.prefix}node${count.index} pve${var.prefix}node${count.index}.sikademo.com > /etc/hosts
     echo $(slu ip) pve${var.prefix}node${count.index} pve${var.prefix}node${count.index}.sikademo.com > /etc/cloud/templates/hosts.debian.tmpl
-    echo "deb [arch=amd64] http://download.proxmox.com/debian/pve bullseye pve-no-subscription" > /etc/apt/sources.list.d/pve-install-repo.list
-    wget https://enterprise.proxmox.com/debian/proxmox-release-bullseye.gpg -O /etc/apt/trusted.gpg.d/proxmox-release-bullseye.gpg
+    echo "deb [arch=amd64] http://download.proxmox.com/debian/pve bookworm pve-no-subscription" > /etc/apt/sources.list.d/pve-install-repo.list
+    wget https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg -O /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg
     apt update
     DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' full-upgrade
-    DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' install proxmox-ve postfix open-iscsi
+    DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' install pve-kernel-6.2
+    DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' install postfix open-iscsi
+    DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' install ifupdown2
+    rm /tmp/.ifupdown2-first-install
+    DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' install -f
+    DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' install proxmox-ve
     apt remove -y os-prober
   EOF
-
 }
 
 resource "digitalocean_volume" "ceph" {
