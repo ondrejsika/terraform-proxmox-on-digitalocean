@@ -23,7 +23,7 @@ resource "digitalocean_vpc" "vpc" {
 resource "digitalocean_droplet" "pve" {
   count = var.node_count
 
-  image    = "debian-11-x64"
+  image    = "debian-12-x64"
   name     = "pve${var.prefix}node${count.index}"
   region   = var.region
   size     = var.size
