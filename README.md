@@ -1,7 +1,7 @@
-# Proxmox (PVE) on Digital Ocean managed by Terraform
+# terraform-proxmox-on-digitalocean
 
     2019 Ondrej Sika <ondrej@ondrejsika.com>
-    https://github.com/ondrejsika/terraform-do-proxmox-example
+    https://github.com/ondrejsika/terraform-proxmox-on-digitalocean
 
 ## Run Server
 
