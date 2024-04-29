@@ -106,9 +106,13 @@ resource "cloudflare_record" "droplet_wildcard" {
   proxied = false
 }
 
-output "ips" {
+output "public_ips" {
   value = digitalocean_droplet.pve.*.ipv4_address
 
+}
+
+output "private_ips" {
+  value = digitalocean_droplet.pve.*.ipv4_address_private
 }
 
 output "domains" {
