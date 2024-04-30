@@ -16,9 +16,13 @@ variable "cloudflare_zone_id" {
 }
 
 locals {
+  default = {
+    size       = "s-4vcpu-8gb"
+    node_count = 3
+  }
   # See override.tf for live config
   clusters = [
-    # "0",
+    # "0"  = merge(local.default, { size = "s-4vcpu-8gb", node_count = 3 }),
   ]
 }
 
@@ -35,14 +39,15 @@ data "digitalocean_ssh_key" "ondrejsika" {
 }
 
 module "pve" {
-  for_each = toset(local.clusters)
+  for_each = local.clusters
 
   source             = "./do-pve"
   prefix             = each.key
   cloudflare_zone_id = var.cloudflare_zone_id
   vpc_ip_range       = "10.250.${each.key}.0/24"
   ssh_key_id         = data.digitalocean_ssh_key.ondrejsika.id
-  size               = "16gb"
+  size               = each.value.size
+  node_count         = each.value.node_count
 }
 
 output "pve" {
