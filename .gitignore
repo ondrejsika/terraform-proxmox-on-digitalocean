@@ -7,3 +7,4 @@ terraform.tfvars
 *.log
 .terraform.tfstate.lock.info
 override.tf
+*.local.txt
