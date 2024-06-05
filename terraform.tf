@@ -21,9 +21,9 @@ locals {
     node_count = 3
   }
   # See override.tf for live config
-  clusters = [
-    # "0"  = merge(local.default, { size = "s-4vcpu-8gb", node_count = 3 }),
-  ]
+  clusters = {
+    # "0"  = merge(local.default, { size = "s-4vcpu-8gb", node_count = 3 })
+  }
 }
 
 provider "digitalocean" {
