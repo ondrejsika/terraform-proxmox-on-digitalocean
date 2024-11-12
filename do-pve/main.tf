@@ -53,6 +53,10 @@ resource "digitalocean_droplet" "pve" {
     DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' install -f
     DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold' install proxmox-ve
     apt remove -y os-prober
+    DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'  install -y nfs-kernel-server
+    mkdir /nfs
+    echo '/nfs *(rw,no_root_squash)' > /etc/exports
+    systemctl restart nfs-kernel-server
   EOF
 }
 
@@ -103,6 +107,16 @@ resource "cloudflare_record" "droplet_wildcard" {
   name    = "*.pve${var.prefix}node${count.index}"
   value   = cloudflare_record.pve[count.index].hostname
   type    = "CNAME"
+  proxied = false
+}
+
+resource "cloudflare_record" "nfs" {
+  count = var.node_count
+
+  zone_id = var.cloudflare_zone_id
+  name    = "nfs${var.prefix}"
+  value   = digitalocean_droplet.pve[0].ipv4_address
+  type    = "A"
   proxied = false
 }
 
