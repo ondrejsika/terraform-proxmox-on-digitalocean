@@ -17,7 +17,27 @@ resource "digitalocean_droplet" "nfs" {
     curl -fsSL https://raw.githubusercontent.com/sikalabs/slu/master/install.sh | sudo sh
     DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'  install -y nfs-kernel-server
     mkdir /nfs
+    mkdir /nfs0
+    mkdir /nfs1
+    mkdir /nfs2
+    mkdir /nfs3
+    mkdir /nfs4
+    mkdir /nfs5
+    mkdir /nfs6
+    mkdir /nfs7
+    mkdir /nfs8
+    mkdir /nfs9
     echo '/nfs *(rw,no_root_squash)' > /etc/exports
+    echo '/nfs0 *(rw,no_root_squash)' >> /etc/exports
+    echo '/nfs1 *(rw,no_root_squash)' >> /etc/exports
+    echo '/nfs2 *(rw,no_root_squash)' >> /etc/exports
+    echo '/nfs3 *(rw,no_root_squash)' >> /etc/exports
+    echo '/nfs4 *(rw,no_root_squash)' >> /etc/exports
+    echo '/nfs5 *(rw,no_root_squash)' >> /etc/exports
+    echo '/nfs6 *(rw,no_root_squash)' >> /etc/exports
+    echo '/nfs7 *(rw,no_root_squash)' >> /etc/exports
+    echo '/nfs8 *(rw,no_root_squash)' >> /etc/exports
+    echo '/nfs9 *(rw,no_root_squash)' >> /etc/exports
     systemctl restart nfs-kernel-server
   EOF
 }
