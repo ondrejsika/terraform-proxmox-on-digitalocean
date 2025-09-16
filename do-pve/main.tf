@@ -111,8 +111,6 @@ resource "cloudflare_record" "droplet_wildcard" {
 }
 
 resource "cloudflare_record" "nfs" {
-  count = var.node_count
-
   zone_id = var.cloudflare_zone_id
   name    = "nfs${var.prefix}"
   value   = digitalocean_droplet.pve[0].ipv4_address
